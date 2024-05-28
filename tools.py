@@ -1,55 +1,27 @@
-tools = [
-    {
-        "type": "function",
-        "function": {
-            "name": "sampleQuestionsFromMMLU",
-            "description": "Sample questions, choices, and their answers from the MMLU evaluation dataset",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "n_samples": {
-                        "type": "integer",
-                        "description": "The number of samples or questions you want to generate",
-                    },
-                },
-                "required": ["n_samples", "format"],
-            },
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "calculateAccuracy",
-            "description": "Get an N-day weather forecast",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "location": {
-                        "type": "string",
-                        "description": "The city and state, e.g. San Francisco, CA",
-                    },
-                    "format": {
-                        "type": "string",
-                        "enum": ["celsius", "fahrenheit"],
-                        "description": "The temperature unit to use. Infer this from the users location.",
-                    },
-                    "num_days": {
-                        "type": "integer",
-                        "description": "The number of days to forecast",
-                    }
-                },
-                "required": ["location", "format", "num_days"]
-            },
-        }
-    },
-]
+from langchain_core.utils.function_calling import convert_to_openai_tool
+from langchain.agents import tool
+from mmlu import formatRow, dataset
+import replicate
 
 
-def sampleQuestionsFromMMLU(n_samples: int = 1) -> tuple[str, list[str], str]:
-    return ("Who among the choices is the best shooter in the game of basketball?", ["Stephen Curry", "Lebron James", "Zaza Pachulia", "Christopher Nolan"], "A")
+# todo: sample later, just return first n_samples for now
+def sampleQuestionsFromMMLU(n_samples: int = 3) -> str:
+    """
+    Sample questions, choices, and their answers from the MMLU evaluation dataset.
+    """
+    return "\n\n".join([formatRow(dataset["test"][i], i+1) for i in range(n_samples)])
+
 
 def calculateAccuracy(n_correct: int, n_questions: int) -> float:
-    return 0.42
+    """
+    Given the number of correct answers and the total number of questions, calculate the accuracy. Returns a number between 0 and 1.
+    """
+    return n_correct / n_questions
 
 def callLLM(model_name: str, prompt: str, sys_prompt: str) -> str:
-    return "A"
+    """
+    Given a model name, user prompt and system prompt, returns the response from the model.
+    """
+    output = replicate.run('meta/llama-2-7b-chat', input={'prompt':prompt, 'sys_prompt':sys_prompt})
+    return " ".join(output)
+
