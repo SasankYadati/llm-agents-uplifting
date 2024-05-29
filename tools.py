@@ -1,5 +1,3 @@
-from langchain_core.utils.function_calling import convert_to_openai_tool
-from langchain.agents import tool
 from mmlu import formatRow, dataset
 import replicate
 
@@ -22,6 +20,13 @@ def callLLM(model_name: str, prompt: str, sys_prompt: str) -> str:
     """
     Given a model name, user prompt and system prompt, returns the response from the model.
     """
+    assert model_name in allow_model_names, f"Model name should be one of {allow_model_names}"
+    print(model_name)
+    print("---")
+    print(prompt)
+    print("---")
+    print(sys_prompt)
+    print("---")
     output = replicate.run(model_name, input={'prompt':prompt, 'sys_prompt':f"Keep your responses short. Just give the answer."})
     output = " ".join(output)
     return f"{model_name}'s response: {output}"
