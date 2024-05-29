@@ -1,5 +1,7 @@
 # llm-agents-uplifting
 
+Logs can be found [here](<(Task 2) Work Trail Logs - Sai.pdf>)
+
 ## Main results
 I put together a workflow using function calling as scaffolding, and decomposed the workflow of the agent into sub-tasks and for each subtask I provided with an appropriate function the agent can use to respond. I primarily used GPT-3.5-turbo as the agent. I could not collect the results I wanted as I ran out of openai api credits, so this is perhaps the most important takeaway: manage the credit limit (even more) wisely! I list some steps I could take towards this in the last section.
 
