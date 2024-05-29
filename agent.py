@@ -13,7 +13,7 @@ sys_prompt = {
 
 workflow = [
     ("Sample 2 questions from MMLU dataset.", [sampleQuestionsFromMMLU]),
-    ("Ask each one of the following LLMs to respond with a choice to these 20 questions and check their answers.",[callLLM]),
+    ("Ask each one of the following LLMs to answer these 20 questions with the correct choice and check their answers.",[callLLM]),
     ("Calculate the number of correct answers for each model and then calculate the accuracy of each model", [calculateAccuracy]),
     ("Report the best model and its accuracy.", [])
 ]
@@ -42,6 +42,7 @@ for instruction, functions in workflow:
     output = client.chat.completions.create(model='gpt-3.5-turbo-0125',
                                             messages=messages,
                                             **kwargs)
+    print(messages)
     output = gpt_process_function_calling(output)
     outputs.append(output)
 print(output)
